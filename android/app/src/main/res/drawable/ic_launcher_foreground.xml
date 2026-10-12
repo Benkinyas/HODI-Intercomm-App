@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:translateX="21.6"
+        android:translateY="21.6">
+        <!-- Bell Icon in Vibrant Mint (#4ade80) -->
+        <path
+            android:fillColor="#4ade80"
+            android:pathData="M54,12c-19.88,0 -36,16.12 -36,36v20l-8,8v4h88v-4l-8,-8V48C90,28.12 73.88,12 54,12zM54,92c4.42,0 8,-3.58 8,-8H46C46,88.42 49.58,92 54,92z" />
+    </group>
+</vector>

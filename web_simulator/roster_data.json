@@ -1,0 +1,56 @@
+[
+  {
+    "id": "u1",
+    "name": "Benson Admin",
+    "roleId": "super_admin",
+    "roleName": "ICT Director & Lead Engineer",
+    "department": "Development",
+    "isHod": true,
+    "status": "online",
+    "phone": "+254712345678",
+    "email": "benson@hodi.com",
+    "lastSeen": "Just now",
+    "pin": "1234"
+  },
+  {
+    "id": "u_1790767070715",
+    "name": "Benson Kinyanjui",
+    "roleName": "Support",
+    "isHod": false,
+    "department": "Support",
+    "phone": "0793609266",
+    "status": "offline",
+    "roleId": "staff",
+    "lastSeen": "Busy"
+  },
+  {
+    "id": "u_1790767437259",
+    "name": "Humphrey",
+    "roleName": "Dev",
+    "isHod": true,
+    "department": "Development",
+    "phone": "+254795772309",
+    "status": "online",
+    "roleId": "hod"
+  },
+  {
+    "id": "u_1790767737081",
+    "name": "Raphael Kedii",
+    "roleName": "Software Developer",
+    "isHod": false,
+    "department": "Development",
+    "phone": "+254726642205",
+    "status": "online",
+    "roleId": "staff"
+  },
+  {
+    "id": "u_1790767902172",
+    "name": "Ben kinyas",
+    "roleName": "Support ict",
+    "isHod": false,
+    "department": "Development",
+    "phone": "0798260608",
+    "status": "online",
+    "roleId": "staff"
+  }
+]

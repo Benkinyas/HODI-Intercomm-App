@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>HODI Enterprise Staff Ringing & Intercom System</title>
+  <link rel="stylesheet" href="style.css?v=20">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ACCOUNT LOGIN & REGISTRATION MODAL (WHATSAPP STYLE PERSISTENT AUTH) -->
+  <div id="authModal" class="modal-overlay hidden">
+    <div class="auth-card glass-panel">
+      <div class="auth-header">
+        <div class="auth-logo">🔔 HODI</div>
+        <h2>Welcome to HODI Intercom</h2>
+        <p class="text-sub">Create your account or log in once to stay connected permanently.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="authTabRegister" class="auth-tab-btn active">✨ Create New Account</button>
+        <button id="authTabLogin" class="auth-tab-btn">🔑 Sign In Existing</button>
+      </div>
+
+      <!-- CREATE ACCOUNT FORM -->
+      <form id="registerForm" class="auth-form">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="regName" class="text-input" placeholder="e.g. Benson Mutua" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Department *</label>
+            <select id="regDept" class="select-input" required>
+              <option value="ICT">ICT & Systems</option>
+              <option value="Executive">Executive / Management</option>
+              <option value="HR">Human Resources (HR)</option>
+              <option value="Operations">Operations & Logistics</option>
+              <option value="Finance">Finance & Accounting</option>
+              <option value="Medical">Medical & Safety</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label>Job Title / Role *</label>
+            <input type="text" id="regRoleName" class="text-input" placeholder="e.g. ICT Support Officer" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Phone Number *</label>
+            <input type="tel" id="regPhone" class="text-input" placeholder="+254712345678" required>
+          </div>
+          <div class="form-group flex-1">
+            <label>System Role *</label>
+            <select id="regRoleId" class="select-input">
+              <option value="staff">Normal Staff</option>
+              <option value="hod">Department Manager (HOD)</option>
+              <option value="ceo">CEO / Executive</option>
+              <option value="super_admin">Super Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="regIsHod">
+            <span>👑 Mark as Department Manager (HOD)</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-brand btn-lg full-width">🚀 Create Account & Enter HODI</button>
+      </form>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm" class="auth-form hidden">
+        <div class="form-group">
+          <label>Select Staff Account to Log In *</label>
+          <select id="loginSelectUser" class="select-input full-width"></select>
+        </div>
+        <button id="btnLoginAccount" class="btn btn-brand btn-lg full-width">🔑 Continue as Selected Staff</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR CODE MODAL FOR MOBILE APP ACCESS -->
+  <div id="qrModal" class="modal-overlay hidden">
+    <div class="modal-card qr-card glass-panel" style="text-align:center; max-width:380px;">
+      <div class="modal-header">
+        <h2>📱 Mobile Access QR Code</h2>
+        <button id="closeQrModalBtn" class="btn-close-modal">✕</button>
+      </div>
+      <div style="margin: 12px 0; display:flex; flex-direction:column; align-items:center; gap:10px;">
+        <p class="text-sub">Scan this QR code with your phone to open HODI Intercom:</p>
+        
+        <div style="background:white; padding:12px; border-radius:14px;">
+          <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http://10.254.0.196:8080/&color=064e3b" alt="HODI QR Code" style="width:180px; height:180px; display:block;">
+        </div>
+
+        <div style="background:var(--surface-raised); border:1px solid var(--border-color); padding:8px 12px; border-radius:8px; font-size:12px; font-family:monospace; color:var(--brand-light); width:100%; word-break:break-all;">
+          http://10.254.0.196:8080/
+        </div>
+      </div>
+      <button id="closeQrBtn" class="btn btn-brand full-width">Done</button>
+    </div>
+  </div>
+
+  <!-- MAIN VIEWPORT CONTAINER (LOCKED TO 100VH NO PAGE SCROLLING) -->
+  <div class="app-viewport">
+
+    <!-- COMPACT TOP HEADER -->
+    <header class="app-header-compact glass-panel">
+      <div class="header-left">
+        <div class="logo-badge">🔔</div>
+        <div class="header-title-box">
+          <div class="greeting-sub">Welcome back,</div>
+          <div class="user-greeting-name" id="hdrUserName">Benson Admin</div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- STATUS SELECTION PILL -->
+        <div class="status-pill-box">
+          <select id="myStatusSelect" class="status-select-sm">
+            <option value="online">🟢 online</option>
+            <option value="busy">🟡 busy</option>
+            <option value="offline">🔴 offline</option>
+          </select>
+        </div>
+
+        <!-- ACTION CHIPS -->
+        <button id="btnSwitchAccount" class="chip-btn-sm" title="Switch Account">🔄 Switch</button>
+        <button id="qrBtn" class="chip-btn-sm" title="Mobile QR Code">📱 QR</button>
+        <button id="soundToggleBtn" class="chip-btn-sm sound-active" title="Sound Override">🔊 Sound</button>
+
+        <!-- USER AVATAR -->
+        <div class="user-avatar-sm" id="hdrUserAvatar">B</div>
+      </div>
+    </header>
+
+    <!-- COMPACT NAVIGATION TABS -->
+    <nav class="nav-tabs-compact">
+      <button class="nav-pill active" data-tab="dashboardTab">📱 Intercom Console</button>
+      <button class="nav-pill" data-tab="liveMonitorTab">🟢 Live Monitor</button>
+      <button class="nav-pill" data-tab="historyTab">📜 Alert History</button>
+      <button class="nav-pill" data-tab="adminTab">⚙️ Roster Admin</button>
+    </nav>
+
+    <!-- LIVE TOAST FEEDBACK NOTIFIER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- MAIN VIEWPORT CONTENT AREA -->
+    <main class="main-content-viewport">
+
+      <!-- TAB 1: INTERCOM DASHBOARD -->
+      <section id="dashboardTab" class="tab-content active full-pane">
+        
+        <!-- COMPACT CONTROL TOOLBAR (VIEW SWITCHER + SEARCH BAR) -->
+        <div class="intercom-toolbar glass-panel">
+          
+          <!-- VIEW MODE SELECTOR SWITCHER -->
+          <div class="col-switcher-row">
+            <button class="col-switch-pill active" data-col="staffDirectoryView">
+              👤 Directory (<span id="countDirectory">0</span>)
+            </button>
+            <button class="col-switch-pill" data-col="departmentsView">
+              🏢 Departments (<span id="countDepartments">0</span>)
+            </button>
+            <button class="col-switch-pill" data-col="hodsView">
+              👑 HODs (<span id="countHODs">0</span>)
+            </button>
+          </div>
+
+          <!-- SEARCH INPUT & MULTI-RING BAR -->
+          <div class="search-multi-row">
+            <div class="search-input-compact">
+              <span class="search-icon-sm">🔍</span>
+              <input type="text" id="unifiedSearchInput" placeholder="Search staff member by name, role, department or HOD...">
+              <button id="clearSearchBtn" class="btn-clear-sm hidden">✕</button>
+            </div>
+
+            <div class="multi-select-box" id="multiSelectCounter">
+              <span id="multiSelectCountText">0 selected</span>
+              <button id="btnRingMultiSelected" class="btn-ring-sm" disabled>🔔 Ring Selected</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SINGLE ACTIVE LIST CONTAINER (INTERNAL SCROLL ONLY) -->
+        <div class="single-column-container glass-panel">
+          <div id="staffDirectoryView" class="column-view-pane active">
+            <div class="column-list-scrollable" id="staffDirectoryList"></div>
+          </div>
+
+          <div id="departmentsView" class="column-view-pane hidden">
+            <div class="column-list-scrollable" id="departmentsAccordionList"></div>
+          </div>
+
+          <div id="hodsView" class="column-view-pane hidden">
+            <div class="column-list-scrollable" id="hodsList"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 2: LIVE RESPONSE MONITOR -->
+      <section id="liveMonitorTab" class="tab-content hidden full-pane">
+        <div class="monitor-header-compact glass-panel">
+          <h3>🟢 Real-Time Ring & Timeline Monitor</h3>
+          <p class="text-sub">Instant updates when recipients acknowledge or reply to your rings.</p>
+        </div>
+
+        <div class="scrollable-pane-container glass-panel">
+          <div class="live-timeline-grid" id="liveMonitorGrid"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ALERT HISTORY & LOGS -->
+      <section id="historyTab" class="tab-content hidden full-pane">
+        <div class="scrollable-pane-container glass-panel">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Sender</th>
+                  <th>Recipients</th>
+                  <th>Priority</th>
+                  <th>Message / Template</th>
+                  <th>Responses</th>
+                  <th>Avg Response</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: SYSTEM & ROSTER MANAGEMENT -->
+      <section id="adminTab" class="tab-content hidden full-pane">
+        <div class="scrollable-pane-container glass-panel">
+          <div class="admin-grid">
+            <div class="admin-card">
+              <h3>📁 Bulk Import Roster</h3>
+              <p class="text-sub">CSV format: <code>name, roleName, department, phone, isHod</code></p>
+              <textarea id="adminCsvTextarea" rows="4" class="code-textarea" placeholder="Benson Admin,ICT Director,ICT,+254712345678,true&#10;John Kamau,ICT Specialist,ICT,+254733112233,false"></textarea>
+              <div class="card-actions">
+                <button id="btnLoadTemplate" class="btn btn-outline-sm">Sample CSV</button>
+                <button id="btnProcessImport" class="btn btn-brand btn-sm">Import Roster</button>
+              </div>
+            </div>
+
+            <div class="admin-card">
+              <h3>➕ Register Staff Account</h3>
+              <form id="adminAddStaffForm" class="form-grid">
+                <div class="form-group">
+                  <label>Full Name *</label>
+                  <input type="text" id="adminStaffName" class="text-input" required placeholder="e.g. Sarah Wanjiku">
+                </div>
+                <div class="form-group">
+                  <label>Job Title / Role *</label>
+                  <input type="text" id="adminStaffRoleName" class="text-input" required placeholder="e.g. Operations Officer">
+                </div>
+                <div class="form-group">
+                  <label>Department *</label>
+                  <input type="text" id="adminStaffDept" class="text-input" required placeholder="e.g. Operations">
+                </div>
+                <div class="form-group">
+                  <label>Phone Number *</label>
+                  <input type="tel" id="adminStaffPhone" class="text-input" required placeholder="+254700112233">
+                </div>
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="adminStaffIsHod">
+                    <span>👑 Department Manager (HOD)</span>
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-brand full-width">Add Employee</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- RING COMPOSER MODAL -->
+  <div id="ringModal" class="modal-overlay hidden">
+    <div class="modal-card ring-composer-card glass-panel">
+      <div class="modal-header">
+        <div>
+          <h2>🔔 Compose Ring / Alert Page</h2>
+          <p id="ringTargetSubtitle" class="text-sub">Ringing: <strong>Benson</strong></p>
+        </div>
+        <button id="closeRingModalBtn" class="btn-close-modal">✕</button>
+      </div>
+
+      <form id="ringComposerForm">
+        <div class="form-group">
+          <label>Quick Template Notifications (Tap to select):</label>
+          <div class="template-chips-grid">
+            <button type="button" class="template-chip" data-text="Come to my office">🏢 Come to my office</button>
+            <button type="button" class="template-chip" data-text="Let's go for a meeting">🤝 Let's go for a meeting</button>
+            <button type="button" class="template-chip" data-text="Call me ASAP">📞 Call me ASAP</button>
+            <button type="button" class="template-chip" data-text="Emergency briefing required">🚨 Emergency briefing required</button>
+            <button type="button" class="template-chip" data-text="Review urgent documents">📄 Review urgent documents</button>
+            <button type="button" class="template-chip" data-text="Quick check-in / Coffee break">☕ Quick check-in</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="customMessageText">Custom Message Text *</label>
+          <textarea id="customMessageText" class="code-textarea custom-msg-box" placeholder="Type custom message..." rows="2" required>Come to my office</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Priority & Ringing Level *</label>
+          <div class="priority-chips-container">
+            <label class="priority-chip priority-normal active">
+              <input type="radio" name="ringPriority" value="normal" checked>
+              <div class="priority-content">
+                <span class="p-icon">ℹ️</span>
+                <div class="p-text">
+                  <strong>NORMAL</strong>
+                  <small>Standard chime</small>
+                </div>
+              </div>
+            </label>
+
+            <label class="priority-chip priority-important">
+              <input type="radio" name="ringPriority" value="important">
+              <div class="priority-content">
+                <span class="p-icon">⚠️</span>
+                <div class="p-text">
+                  <strong>IMPORTANT</strong>
+                  <small>Loud chime</small>
+                </div>
+              </div>
+            </label>
+
+            <label class="priority-chip priority-urgent">
+              <input type="radio" name="ringPriority" value="urgent">
+              <div class="priority-content">
+                <span class="p-icon">🚨</span>
+                <div class="p-text">
+                  <strong>URGENT</strong>
+                  <small>Alarm override</small>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ringLocation">Office / Location Tag *</label>
+          <input type="text" id="ringLocation" class="text-input" value="Main Office" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelRingBtn" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="btnSubmitRing" class="btn btn-brand btn-ring-submit">🔔 RING NOW</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- INCOMING PHONE RINGING OVERLAY -->
+  <div id="incomingRingOverlay" class="incoming-ring-overlay hidden">
+    <div class="incoming-ring-card glass-panel" id="incomingCardTheme">
+      
+      <div class="priority-banner" id="incomingPriorityBanner">
+        <span id="incomingPriorityIcon">🚨</span>
+        <span id="incomingPriorityTitle">INCOMING URGENT PAGE</span>
+      </div>
+
+      <div class="caller-profile">
+        <div class="caller-avatar" id="incCallerAvatar">B</div>
+        <h2 id="incCallerName">Benson Admin</h2>
+        <p id="incCallerRole" class="caller-role-text">ICT Director & Admin • Main Office</p>
+      </div>
+
+      <div class="message-display-box">
+        <div class="msg-quote-label">MESSAGE FROM SENDER:</div>
+        <div class="msg-quote-text" id="incMessageText">"Come to my office"</div>
+      </div>
+
+      <div class="ringing-indicator">
+        <span class="pulse-ring"></span>
+        <span id="incAudioStatusText">🔊 PHONE RINGING (SILENT MODE OVERRIDE)...</span>
+      </div>
+
+      <form id="ackResponseForm" class="ack-form">
+        <div class="ack-options-label">Select Acknowledgement Reply:</div>
+        
+        <div class="ack-presets-grid">
+          <button type="button" class="ack-preset-btn active" data-preset="on_my_way">
+            <span class="btn-icon">🏃‍♂️</span>
+            <span>I'm on my way</span>
+          </button>
+          <button type="button" class="ack-preset-btn" data-preset="in_meeting">
+            <span class="btn-icon">💼</span>
+            <span>I'm in a meeting</span>
+          </button>
+          <button type="button" class="ack-preset-btn" data-preset="calling_you">
+            <span class="btn-icon">📞</span>
+            <span>I'm calling you</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="incCustomReplyText">Custom Text Reply (Optional):</label>
+          <input type="text" id="incCustomReplyText" class="text-input custom-reply-input" placeholder="Type a custom reply message...">
+        </div>
+
+        <button type="submit" class="btn btn-ack-submit">
+          <span>✅ SEND ACKNOWLEDGEMENT & REPLY</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="app.js?v=20"></script>
+</body>
+</html>

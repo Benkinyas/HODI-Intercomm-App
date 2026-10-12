@@ -1,0 +1,38 @@
+[
+  {
+    "id": "u_1791288408060_418",
+    "name": "Eddy",
+    "roleId": "hod",
+    "roleName": "Dev",
+    "department": "ICT",
+    "isHod": true,
+    "status": "online",
+    "phone": "+254112965195",
+    "lastSeen": "Just now",
+    "pin": "1234"
+  },
+  {
+    "id": "u_1791288663178_920",
+    "name": "Benkinyas",
+    "roleId": "hod",
+    "roleName": "Supporting",
+    "department": "Support",
+    "isHod": true,
+    "status": "online",
+    "phone": "0793609266",
+    "lastSeen": "Just now",
+    "pin": "1234"
+  },
+  {
+    "id": "u_1791366945524_612",
+    "name": "DryRun Specialist",
+    "roleId": "hod",
+    "roleName": "QA Systems Specialist",
+    "department": "ICT",
+    "isHod": true,
+    "status": "online",
+    "phone": "+254700999888",
+    "lastSeen": "Just now",
+    "pin": "1234"
+  }
+]

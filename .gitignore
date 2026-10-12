@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# Backend compiled output
+backend/lib/
+
+# Expo & React Native
+.expo/
+**/.expo/
+web-build/
+dist/
+expo-env.d.ts
+.kotlin/
+.metro-health-check*
+
+# Android build & secrets
+.gradle/
+**/.gradle/
+**/build/
+android/local.properties
+*.keystore
+*.jks
+
+# Flutter / Dart
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDEs & System
+.idea/
+**/.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs & Environment
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env*.local
+*.pem
+*.key

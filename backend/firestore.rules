@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /orgs/{orgId} {
+      function member() {
+        return request.auth != null && request.auth.token.orgId == orgId;
+      }
+
+      match /people/{personId} {
+        allow read: if member();
+        allow update: if member()
+          && request.auth.uid == personId
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['name', 'role', 'photoUrl', 'prefersVisualAlert']);
+
+        match /private/{doc} {
+          allow read, write: if false; // Private phone contact data isolated to Cloud Functions server
+        }
+
+        match /devices/{deviceId} {
+          allow read, write: if member() && request.auth.uid == personId;
+        }
+      }
+
+      match /pages/{pageId} {
+        allow read: if member() && (
+          resource.data.fromId == request.auth.uid ||
+          resource.data.toId == request.auth.uid ||
+          resource.data.kind == 'sos'
+        );
+        allow write: if false; // Cloud Functions Callable backend handles page lifecycle
+      }
+
+      match /counters/{d} { allow read, write: if false; }
+      match /spend/{d}    { allow read, write: if false; }
+    }
+  }
+}
